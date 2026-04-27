@@ -1,0 +1,53 @@
+services:
+  app:
+    #build: .  # 현재 폴더의 Dockerfile을 읽어서 빌드하는 건데 -> 이것보다는 GitHub Actions 에서 빌드가 더 빨라서 그렇게 변경
+    image: ${DOCKER_USERNAME}/${DOCKER_REPO}:latest  # Docker Hub에서 pull 받아서 컨테이너 생성 시에 사용할 이미지 지정
+    container_name: ibori-container
+    restart: always
+
+    ports:
+      - "8080:8080" # host의 8080 포트를 컨테이너의 8080 포트와 매핑 -> 포트 포워딩!
+
+    environment:
+      SPRING_PROFILES_ACTIVE: dev # application-dev.yml 이용
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ibori-db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+      TZ: Asia/Seoul
+
+    depends_on:
+      ibori-db:
+        condition: service_healthy
+
+    networks:
+      - ibori-network # postgreSQL 과 같은 네트워크 공유
+
+  ibori-db:
+    image: postgres:15 # lastest 하면 업데이트 되기도 해서 안좋음
+    container_name: ibori-db-container
+    restart: always
+
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      TZ: Asia/Seoul
+
+    volumes:
+      - ibori-postgres-data:/var/lib/postgresql/data # DB 볼륨
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - ibori-network # 네트워크 지정
+
+networks:
+  ibori-network:
+    driver: bridge
+
+volumes:
+  ibori-postgres-data:
