@@ -1,0 +1,26 @@
+package com.springboot.iboribe.domain.auth.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+@Schema(title = "TokenResponse: 로그인 성공 응답 DTO")
+public class TokenResponse {
+
+  @Schema(description = "사용자 ID", example = "1")
+  private Long userId;
+
+  @Schema(description = "이름", example = "신채린")
+  private String name;
+
+  @Schema(description = "아이디", example = "newchaerin")
+  private String username;
+
+  @Schema(description = "JWT 액세스 토큰")
+  private String accessToken;
+
+  @Schema(description = "JWT 리프레시 토큰")
+  private String refreshToken;
+}

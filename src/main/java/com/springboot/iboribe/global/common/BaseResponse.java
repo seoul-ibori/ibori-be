@@ -1,4 +1,4 @@
-package com.springboot.iboribe.global.response;
+package com.springboot.iboribe.global.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(title = "BaseResponse DTO", description = "공통 응답 형식")
 public class BaseResponse<T> {
+
   @Schema(description = "요청 성공 여부", example = "true")
   private boolean success;
 
@@ -28,6 +29,10 @@ public class BaseResponse<T> {
 
   public static <T> BaseResponse<T> success(String message, T data) {
     return new BaseResponse<>(true, 200, message, data);
+  }
+
+  public static <T> BaseResponse<T> success(int code, String message, T data) {
+    return new BaseResponse<>(true, code, message, data);
   }
 
   public static <T> BaseResponse<T> error(int code, String message) {
