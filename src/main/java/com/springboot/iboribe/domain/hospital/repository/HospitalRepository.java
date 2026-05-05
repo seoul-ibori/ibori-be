@@ -13,14 +13,16 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
   @Query(
       value =
           """
-          SELECT *, (6371000 * acos(
-            cos(radians(:lat)) * cos(radians(lat)) *
-            cos(radians(lng) - radians(:lng)) +
-            sin(radians(:lat)) * sin(radians(lat))
-          )) AS distance
-          FROM hospitals
-          WHERE (:nightOnly = false OR night_care = true)
-          HAVING distance < :radius
+          SELECT * FROM (
+            SELECT *, (6371000 * acos(
+              cos(radians(:lat)) * cos(radians(lat)) *
+              cos(radians(lng) - radians(:lng)) +
+              sin(radians(:lat)) * sin(radians(lat))
+            )) AS distance
+            FROM hospitals
+            WHERE (:nightOnly = false OR night_care = true)
+          ) sub
+          WHERE distance < :radius
           ORDER BY distance
           """,
       nativeQuery = true)

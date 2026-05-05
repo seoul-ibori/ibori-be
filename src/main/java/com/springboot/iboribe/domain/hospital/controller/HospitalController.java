@@ -1,9 +1,12 @@
 package com.springboot.iboribe.domain.hospital.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.iboribe.domain.hospital.dto.response.HospitalResponse;
@@ -21,6 +24,30 @@ import lombok.RequiredArgsConstructor;
 public class HospitalController {
 
   private final HospitalService hospitalService;
+
+  @Operation(
+      summary = "[토큰 X] 반경 내 병원 목록 조회",
+      description =
+          """
+          **Parameters**  \n
+          lat: 중심 위도  \n
+          lng: 중심 경도  \n
+          radius: 반경 (미터 단위, 예: 1000 = 1km)  \n
+          nightOnly: 야간진료 병원만 필터링 여부 (기본값: false)  \n
+
+          **Returns**  \n
+          반경 내 병원 목록 (거리순 정렬)  \n
+          """)
+  @GetMapping
+  public ResponseEntity<BaseResponse<List<HospitalResponse>>> getHospitals(
+      @RequestParam double lat,
+      @RequestParam double lng,
+      @RequestParam double radius,
+      @RequestParam(defaultValue = "false") boolean nightOnly) {
+
+    return ResponseEntity.ok(
+        BaseResponse.success(hospitalService.getHospitals(lat, lng, radius, nightOnly)));
+  }
 
   @Operation(
       summary = "[토큰 X] 병원 상세 정보 단일 조회",
