@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Schema(title = "CodefChildRegisterRequest: CODEF 자녀 등록 요청 DTO")
-public class CodefChildRegisterRequest {
+public class CodefChildAuthRequest {
 
   @NotBlank(message = "기관코드는 필수입니다.")
   @Schema(description = "기관코드", example = "0002")
