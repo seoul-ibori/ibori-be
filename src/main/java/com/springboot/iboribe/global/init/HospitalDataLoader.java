@@ -89,7 +89,9 @@ public class HospitalDataLoader implements CommandLineRunner {
   }
 
   private Double parseDouble(String value) {
-    if (value == null || value.trim().isEmpty()) return null;
-    return Double.parseDouble(value.trim());
+    if (value == null) return null;
+    String trimmed = value.trim();
+    if (trimmed.isEmpty() || trimmed.equalsIgnoreCase("null")) return null;
+    return Double.parseDouble(trimmed);
   }
 }
