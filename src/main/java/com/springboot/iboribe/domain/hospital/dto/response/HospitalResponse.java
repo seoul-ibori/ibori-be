@@ -1,5 +1,9 @@
 package com.springboot.iboribe.domain.hospital.dto.response;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import com.springboot.iboribe.domain.hospital.entity.Hospital;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,55 +42,38 @@ public class HospitalResponse {
   @Schema(description = "경도", example = "127.0396")
   private Double lng;
 
-  @Schema(description = "월요일 진료 시작 (예: 900.0 = 09:00)")
-  private Double monS;
+  @Schema(description = "오늘 진료 시간", example = "오전 9:00 ~ 오후 6:00")
+  private String todayHours;
 
-  @Schema(description = "월요일 진료 종료")
-  private Double monE;
+  @Schema(description = "요일별 진료 시간")
+  private WeeklyHours weeklyHours;
 
-  @Schema(description = "화요일 진료 시작")
-  private Double tueS;
-
-  @Schema(description = "화요일 진료 종료")
-  private Double tueE;
-
-  @Schema(description = "수요일 진료 시작")
-  private Double wedS;
-
-  @Schema(description = "수요일 진료 종료")
-  private Double wedE;
-
-  @Schema(description = "목요일 진료 시작")
-  private Double thuS;
-
-  @Schema(description = "목요일 진료 종료")
-  private Double thuE;
-
-  @Schema(description = "금요일 진료 시작")
-  private Double friS;
-
-  @Schema(description = "금요일 진료 종료")
-  private Double friE;
-
-  @Schema(description = "토요일 진료 시작")
-  private Double satS;
-
-  @Schema(description = "토요일 진료 종료")
-  private Double satE;
-
-  @Schema(description = "일요일 진료 시작")
-  private Double sunS;
-
-  @Schema(description = "일요일 진료 종료")
-  private Double sunE;
-
-  @Schema(description = "공휴일 진료 시작")
-  private Double holS;
-
-  @Schema(description = "공휴일 진료 종료")
-  private Double holE;
+  @Getter
+  @Builder
+  public static class WeeklyHours {
+    private String mon;
+    private String tue;
+    private String wed;
+    private String thu;
+    private String fri;
+    private String sat;
+    private String sun;
+    private String hol;
+  }
 
   public static HospitalResponse from(Hospital hospital) {
+    WeeklyHours weekly =
+        WeeklyHours.builder()
+            .mon(formatRange(hospital.getMonS(), hospital.getMonE()))
+            .tue(formatRange(hospital.getTueS(), hospital.getTueE()))
+            .wed(formatRange(hospital.getWedS(), hospital.getWedE()))
+            .thu(formatRange(hospital.getThuS(), hospital.getThuE()))
+            .fri(formatRange(hospital.getFriS(), hospital.getFriE()))
+            .sat(formatRange(hospital.getSatS(), hospital.getSatE()))
+            .sun(formatRange(hospital.getSunS(), hospital.getSunE()))
+            .hol(formatRange(hospital.getHolS(), hospital.getHolE()))
+            .build();
+
     return HospitalResponse.builder()
         .id(hospital.getId())
         .name(hospital.getName())
@@ -97,22 +84,35 @@ public class HospitalResponse {
         .nightCare(hospital.getNightCare())
         .lat(hospital.getLat())
         .lng(hospital.getLng())
-        .monS(hospital.getMonS())
-        .monE(hospital.getMonE())
-        .tueS(hospital.getTueS())
-        .tueE(hospital.getTueE())
-        .wedS(hospital.getWedS())
-        .wedE(hospital.getWedE())
-        .thuS(hospital.getThuS())
-        .thuE(hospital.getThuE())
-        .friS(hospital.getFriS())
-        .friE(hospital.getFriE())
-        .satS(hospital.getSatS())
-        .satE(hospital.getSatE())
-        .sunS(hospital.getSunS())
-        .sunE(hospital.getSunE())
-        .holS(hospital.getHolS())
-        .holE(hospital.getHolE())
+        .todayHours(resolveTodayHours(hospital, weekly))
+        .weeklyHours(weekly)
         .build();
+  }
+
+  private static String resolveTodayHours(Hospital hospital, WeeklyHours weekly) {
+    DayOfWeek today = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfWeek();
+    return switch (today) {
+      case MONDAY -> weekly.getMon();
+      case TUESDAY -> weekly.getTue();
+      case WEDNESDAY -> weekly.getWed();
+      case THURSDAY -> weekly.getThu();
+      case FRIDAY -> weekly.getFri();
+      case SATURDAY -> weekly.getSat();
+      case SUNDAY -> weekly.getSun();
+    };
+  }
+
+  private static String formatRange(Double start, Double end) {
+    if (start == null || end == null) return "휴진";
+    return formatTime(start) + " ~ " + formatTime(end);
+  }
+
+  private static String formatTime(Double value) {
+    int total = value.intValue();
+    int hours = total / 100;
+    int minutes = total % 100;
+    String period = hours < 12 ? "오전" : "오후";
+    int display = hours == 0 ? 12 : (hours > 12 ? hours - 12 : hours);
+    return String.format("%s %d:%02d", period, display, minutes);
   }
 }

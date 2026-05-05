@@ -42,36 +42,52 @@ public class Hospital {
 
   private Boolean nightCare;
 
+  @Column(name = "mon_s")
   private Double monS;
 
+  @Column(name = "mon_e")
   private Double monE;
 
+  @Column(name = "tue_s")
   private Double tueS;
 
+  @Column(name = "tue_e")
   private Double tueE;
 
+  @Column(name = "wed_s")
   private Double wedS;
 
+  @Column(name = "wed_e")
   private Double wedE;
 
+  @Column(name = "thu_s")
   private Double thuS;
 
+  @Column(name = "thu_e")
   private Double thuE;
 
+  @Column(name = "fri_s")
   private Double friS;
 
+  @Column(name = "fri_e")
   private Double friE;
 
+  @Column(name = "sat_s")
   private Double satS;
 
+  @Column(name = "sat_e")
   private Double satE;
 
+  @Column(name = "sun_s")
   private Double sunS;
 
+  @Column(name = "sun_e")
   private Double sunE;
 
+  @Column(name = "hol_s")
   private Double holS;
 
+  @Column(name = "hol_e")
   private Double holE;
 
   private Double lat;
