@@ -72,6 +72,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources', 'data']
+        }
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
