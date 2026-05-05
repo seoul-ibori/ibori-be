@@ -37,7 +37,8 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/api/auth/**",
                         "/api/hospital/**",
-                        "/api/predict/**")
+                        "/api/predict/**",
+                        "/api/district/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
