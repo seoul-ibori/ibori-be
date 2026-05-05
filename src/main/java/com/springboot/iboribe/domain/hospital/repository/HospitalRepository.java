@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.springboot.iboribe.domain.district.dto.response.DistrictResponse;
 import com.springboot.iboribe.domain.hospital.entity.Hospital;
 
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
-  // nightOnly = false (야간진료 필터 OFF), nightOnly = true (야간진료 필터 ON)
+
   @Query(
       value =
           """
@@ -31,4 +32,10 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
       @Param("lng") double lng,
       @Param("radius") double radius,
       @Param("nightOnly") boolean nightOnly);
+
+  @Query(
+      "SELECT new com.springboot.iboribe.domain.district.dto.response.DistrictResponse(h.gu, h.dong) "
+          + "FROM Hospital h WHERE h.gu LIKE %:keyword% OR h.dong LIKE %:keyword% "
+          + "GROUP BY h.gu, h.dong ORDER BY h.gu, h.dong")
+  List<DistrictResponse> searchDistricts(@Param("keyword") String keyword);
 }
