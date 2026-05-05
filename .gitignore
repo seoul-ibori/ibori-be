@@ -39,3 +39,4 @@ out/
 src/main/resources/*.properties
 src/main/resources/*.yml
 .env
+.DS_Store
