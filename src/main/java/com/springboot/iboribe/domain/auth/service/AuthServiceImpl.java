@@ -29,6 +29,20 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
   private final FamilyRepository familyRepository;
+  private static final String DEMO_USERNAME = "mom_jiyoon";
+
+  @Override
+  @Transactional(readOnly = true)
+  public TokenResponse demoLogin() {
+    User user =
+        userRepository
+            .findByUsername(DEMO_USERNAME)
+            .orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
+
+    log.info("[Auth] 데모 계정 로그인 성공 - userId: {}, username: {}", user.getId(), user.getUsername());
+
+    return createTokenResponse(user);
+  }
 
   @Override
   public void signUp(SignUpRequest request) {
@@ -57,6 +71,7 @@ public class AuthServiceImpl implements AuthService {
             .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
             .family(family)
+            .familyRole(request.getFamilyRole())
             .build();
 
     userRepository.save(user);

@@ -17,6 +17,7 @@ public enum AuthErrorCode implements BaseErrorCode {
 
   REFRESH_TOKEN_REQUIRED("AUTH4011", "리프레시 토큰이 필요합니다.", HttpStatus.UNAUTHORIZED),
   INVALID_REFRESH_TOKEN("AUTH4012", "유효하지 않은 리프레시 토큰입니다.", HttpStatus.UNAUTHORIZED),
+  AUTHENTICATION_REQUIRED("AUTH4013", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED),
 
   USER_NOT_FOUND("AUTH4041", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
   FAMILY_NOT_FOUND("AUTH4042", "존재하지 않는 가족고유번호입니다.", HttpStatus.NOT_FOUND);
