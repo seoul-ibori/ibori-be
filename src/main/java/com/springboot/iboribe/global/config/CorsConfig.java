@@ -19,6 +19,7 @@ public class CorsConfig {
             "http://localhost:3000",
             "http://localhost:5173",
             "http://localhost:5174",
+            "http://localhost:8080",
             "https://ibori.site"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
