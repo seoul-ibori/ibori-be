@@ -13,11 +13,13 @@ public enum AuthErrorCode implements BaseErrorCode {
   ALREADY_EXIST_USERNAME("AUTH4001", "이미 사용 중인 아이디입니다.", HttpStatus.BAD_REQUEST),
   LOGIN_FAIL("AUTH4002", "아이디 또는 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
   INVALID_INPUT_FORMAT("AUTH4003", "아이디 또는 비밀번호 형식이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  ALREADY_EXIST_FAMILY_CODE("AUTH4004", "이미 사용 중인 가족고유번호입니다.", HttpStatus.BAD_REQUEST),
 
   REFRESH_TOKEN_REQUIRED("AUTH4011", "리프레시 토큰이 필요합니다.", HttpStatus.UNAUTHORIZED),
   INVALID_REFRESH_TOKEN("AUTH4012", "유효하지 않은 리프레시 토큰입니다.", HttpStatus.UNAUTHORIZED),
 
-  USER_NOT_FOUND("AUTH4041", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+  USER_NOT_FOUND("AUTH4041", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+  FAMILY_NOT_FOUND("AUTH4042", "존재하지 않는 가족고유번호입니다.", HttpStatus.NOT_FOUND);
 
   private final String code;
   private final String message;
