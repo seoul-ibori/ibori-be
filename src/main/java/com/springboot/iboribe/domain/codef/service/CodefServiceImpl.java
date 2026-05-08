@@ -12,6 +12,7 @@ import com.springboot.iboribe.domain.codef.dto.request.CodefTreatmentRequest;
 import com.springboot.iboribe.domain.codef.dto.response.CodefChildListResponse;
 import com.springboot.iboribe.domain.codef.dto.response.CodefChildRegisterResponse;
 import com.springboot.iboribe.domain.codef.dto.response.CodefTreatmentResponse;
+import com.springboot.iboribe.domain.medicalrecord.service.MedicalRecordSaveService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CodefServiceImpl implements CodefService {
 
   private final CodefClient codefClient;
+  private final MedicalRecordSaveService medicalRecordSaveService;
 
   /** CODEF 자녀 등록 1차 요청 - 인증 요청 및 2Way 여부 확인 */
   @Override
@@ -90,15 +92,12 @@ public class CodefServiceImpl implements CodefService {
 
   /** CODEF 진료 및 투약정보 조회 2차 요청 - 간편인증 완료 후 최종 데이터 조회 */
   @Override
-  public CodefTreatmentResponse getTreatmentInfo2Way(CodefTreatment2WayRequest request) {
-    log.info(
-        "[CODEF] 진료 및 투약정보 조회 2차 요청 시작 - userName: {}, type: {}",
-        request.getUserName(),
-        request.getType());
-
+  @Transactional
+  public CodefTreatmentResponse getTreatmentInfo2Way(
+      Long userId, CodefTreatment2WayRequest request) {
     CodefTreatmentResponse response = codefClient.getTreatmentInfo2Way(request);
 
-    log.info("[CODEF] 진료 및 투약정보 조회 2차 요청 완료 - resultCode: {}", response.getResultCode());
+    medicalRecordSaveService.saveFromCodefResponse(userId, response);
 
     return response;
   }
