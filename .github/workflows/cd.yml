@@ -82,6 +82,8 @@ jobs:
                   SPRING_DATASOURCE_URL: jdbc:postgresql://ibori-db:5432/\${DB_NAME}
                   SPRING_DATASOURCE_USERNAME: \${DB_USER}
                   SPRING_DATASOURCE_PASSWORD: \${DB_PASS}
+                  JWT_SECRET: \${JWT_SECRET}
+                  CODEF_ACCESS_TOKEN: \${CODEF_ACCESS_TOKEN}
                   TZ: Asia/Seoul
                 depends_on:
                   ibori-db:
