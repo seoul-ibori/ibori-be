@@ -3,6 +3,7 @@ package com.springboot.iboribe.domain.codef.controller;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.springboot.iboribe.domain.codef.dto.request.CodefChildAuthRequest;
@@ -15,6 +16,7 @@ import com.springboot.iboribe.domain.codef.dto.response.CodefChildRegisterRespon
 import com.springboot.iboribe.domain.codef.dto.response.CodefTreatmentResponse;
 import com.springboot.iboribe.domain.codef.service.CodefService;
 import com.springboot.iboribe.global.common.BaseResponse;
+import com.springboot.iboribe.global.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +31,7 @@ public class CodefController {
   private final CodefService codefService;
 
   @Operation(
-      summary = "[토큰 O] CODEF 자녀 등록 1차 요청",
+      summary = "[토큰 X] CODEF 자녀 등록 1차 요청",
       description =
           """
           **Description**  \n
@@ -60,7 +62,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 O] CODEF 자녀 등록 2차 요청",
+      summary = "[토큰 X] CODEF 자녀 등록 2차 요청",
       description =
           """
           **Description**  \n
@@ -86,7 +88,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 O] CODEF 자녀 목록 조회 1차 요청",
+      summary = "[토큰 X] CODEF 자녀 목록 조회 1차 요청",
       description =
           """
           **Description**  \n
@@ -117,7 +119,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 O] CODEF 자녀 목록 조회 2차 요청",
+      summary = "[토큰 X] CODEF 자녀 목록 조회 2차 요청",
       description =
           """
           **Description**  \n
@@ -142,7 +144,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 O] CODEF 진료 및 투약정보 조회 1차 요청",
+      summary = "[토큰 X] CODEF 진료 및 투약정보 조회 1차 요청",
       description =
           """
           **Description**  \n
@@ -169,7 +171,7 @@ public class CodefController {
           - continue2Way=true 인 경우 카카오/간편인증 완료 후 2차 요청 필요  \n
           - twoWayInfo는 2차 요청 시 그대로 사용  \n
           """)
-  @PostMapping("/treatments")
+  @PostMapping("/medical-records")
   public ResponseEntity<BaseResponse<CodefTreatmentResponse>> getTreatmentInfo(
       @Valid @RequestBody CodefTreatmentRequest request) {
 
@@ -179,7 +181,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 O] CODEF 진료 및 투약정보 조회 2차 요청",
+      summary = "[토큰 X] CODEF 진료 및 투약정보 조회 2차 요청",
       description =
           """
           **Description**  \n
@@ -196,12 +198,14 @@ public class CodefController {
           **Returns**  \n
           CODEF 진료 및 투약정보 최종 조회 결과  \n
           """)
-  @PostMapping("/treatments/2way")
+  @PostMapping("/medical-records/2way")
   public ResponseEntity<BaseResponse<CodefTreatmentResponse>> getTreatmentInfo2Way(
+      @AuthenticationPrincipal CustomUserDetails userDetails,
       @Valid @RequestBody CodefTreatment2WayRequest request) {
 
-    CodefTreatmentResponse response = codefService.getTreatmentInfo2Way(request);
+    CodefTreatmentResponse response =
+        codefService.getTreatmentInfo2Way(userDetails.getUserId(), request);
 
-    return ResponseEntity.ok(BaseResponse.success(200, "CODEF 진료 및 투약정보 조회 2차 요청 성공", response));
+    return ResponseEntity.ok(BaseResponse.success(200, "CODEF 의료 기록 조회 및 저장 성공", response));
   }
 }

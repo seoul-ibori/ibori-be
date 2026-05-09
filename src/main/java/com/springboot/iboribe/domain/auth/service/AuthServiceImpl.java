@@ -8,6 +8,8 @@ import com.springboot.iboribe.domain.auth.dto.request.LoginRequest;
 import com.springboot.iboribe.domain.auth.dto.request.SignUpRequest;
 import com.springboot.iboribe.domain.auth.dto.response.TokenResponse;
 import com.springboot.iboribe.domain.auth.exception.AuthErrorCode;
+import com.springboot.iboribe.domain.family.entity.Family;
+import com.springboot.iboribe.domain.family.repository.FamilyRepository;
 import com.springboot.iboribe.domain.user.entity.User;
 import com.springboot.iboribe.domain.user.repository.UserRepository;
 import com.springboot.iboribe.global.exception.CustomException;
@@ -26,12 +28,41 @@ public class AuthServiceImpl implements AuthService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
+  private final FamilyRepository familyRepository;
+  private static final String DEMO_USERNAME = "mom_jiyoon";
+
+  @Override
+  @Transactional(readOnly = true)
+  public TokenResponse demoLogin() {
+    User user =
+        userRepository
+            .findByUsername(DEMO_USERNAME)
+            .orElseThrow(() -> new CustomException(AuthErrorCode.USER_NOT_FOUND));
+
+    log.info("[Auth] 데모 계정 로그인 성공 - userId: {}, username: {}", user.getId(), user.getUsername());
+
+    return createTokenResponse(user);
+  }
 
   @Override
   public void signUp(SignUpRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
-      log.warn("[Auth] 이미 사용 중인 아이디로 회원가입 시도 - username: {}", request.getUsername());
       throw new CustomException(AuthErrorCode.ALREADY_EXIST_USERNAME);
+    }
+
+    Family family;
+
+    if (request.getFirstFamilyMember()) {
+      if (familyRepository.existsByFamilyCode(request.getFamilyCode())) {
+        throw new CustomException(AuthErrorCode.ALREADY_EXIST_FAMILY_CODE);
+      }
+
+      family = familyRepository.save(Family.builder().familyCode(request.getFamilyCode()).build());
+    } else {
+      family =
+          familyRepository
+              .findByFamilyCode(request.getFamilyCode())
+              .orElseThrow(() -> new CustomException(AuthErrorCode.FAMILY_NOT_FOUND));
     }
 
     User user =
@@ -39,14 +70,11 @@ public class AuthServiceImpl implements AuthService {
             .name(request.getName())
             .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
+            .family(family)
+            .familyRole(request.getFamilyRole())
             .build();
 
-    User savedUser = userRepository.save(user);
-
-    log.info(
-        "[Auth] 신규 사용자 회원가입 성공 - userId: {}, username: {}",
-        savedUser.getId(),
-        savedUser.getUsername());
+    userRepository.save(user);
   }
 
   @Override

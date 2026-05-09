@@ -2,6 +2,9 @@ package com.springboot.iboribe.domain.user.entity;
 
 import jakarta.persistence.*;
 
+import com.springboot.iboribe.domain.family.entity.Family;
+import com.springboot.iboribe.domain.family.entity.FamilyRole;
+
 import lombok.*;
 
 @Entity
@@ -24,4 +27,12 @@ public class User {
 
   @Column(nullable = false)
   private String password;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "family_id", nullable = false)
+  private Family family;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private FamilyRole familyRole;
 }
