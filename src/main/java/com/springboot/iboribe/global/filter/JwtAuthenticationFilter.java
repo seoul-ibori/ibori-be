@@ -10,6 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtProvider jwtProvider;
+  private final UserDetailsService userDetailsService;
+
   private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
   @Override
@@ -36,6 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     return pathMatcher.match("/api/auth/signup", uri)
         || pathMatcher.match("/api/auth/login", uri)
+        || pathMatcher.match("/api/auth/demo-login", uri)
+        || pathMatcher.match("/api/codef/medical-records", uri)
+        || pathMatcher.match("/api/codef/children/register", uri)
+        || pathMatcher.match("/api/codef/children/list", uri)
         || pathMatcher.match("/swagger-ui/**", uri)
         || pathMatcher.match("/swagger-ui.html", uri)
         || pathMatcher.match("/v3/api-docs/**", uri)
@@ -51,13 +60,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String accessToken = jwtProvider.extractAccessToken(request);
 
       if (accessToken != null && jwtProvider.validateToken(accessToken, TokenType.ACCESS_TOKEN)) {
-        Long userId = jwtProvider.getUserIdFromToken(accessToken);
         String username = jwtProvider.getUsernameFromToken(accessToken);
 
-        UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(username, null, null);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        authentication.setDetails(userId);
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
 

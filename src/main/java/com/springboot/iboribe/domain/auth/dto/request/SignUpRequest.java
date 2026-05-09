@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import com.springboot.iboribe.domain.family.entity.FamilyRole;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,4 +43,8 @@ public class SignUpRequest {
   @NotNull(message = "가족 첫 가입자 여부는 필수입니다.")
   @Schema(description = "가족 중 첫 가입자 여부", example = "true")
   private Boolean firstFamilyMember;
+
+  @NotNull(message = "가족 구성원 역할은 필수입니다.")
+  @Schema(description = "가족 구성원 역할", example = "MOTHER")
+  private FamilyRole familyRole;
 }

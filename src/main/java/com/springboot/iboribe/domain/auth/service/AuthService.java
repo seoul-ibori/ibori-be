@@ -6,6 +6,9 @@ import com.springboot.iboribe.domain.auth.dto.response.TokenResponse;
 
 public interface AuthService {
 
+  /** 데모 계정으로 로그인 */
+  TokenResponse demoLogin();
+
   /** 회원가입 */
   void signUp(SignUpRequest request);
 

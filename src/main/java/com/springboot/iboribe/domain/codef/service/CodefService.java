@@ -70,5 +70,5 @@ public interface CodefService {
    * @param request 진료/투약 조회 2차 요청 DTO
    * @return 진료/투약 최종 조회 결과
    */
-  CodefTreatmentResponse getTreatmentInfo2Way(CodefTreatment2WayRequest request);
+  CodefTreatmentResponse getTreatmentInfo2Way(Long userId, CodefTreatment2WayRequest request);
 }

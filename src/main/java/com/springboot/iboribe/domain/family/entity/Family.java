@@ -27,4 +27,8 @@ public class Family {
 
   @Column(nullable = false, unique = true, length = 20)
   private String familyCode;
+
+  public void updateFamilyCode(String familyCode) {
+    this.familyCode = familyCode;
+  }
 }

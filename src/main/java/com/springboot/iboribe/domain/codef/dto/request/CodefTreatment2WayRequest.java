@@ -15,42 +15,76 @@ import lombok.NoArgsConstructor;
 public class CodefTreatment2WayRequest {
 
   @NotBlank(message = "기관코드는 필수입니다.")
+  @Schema(description = "기관코드", example = "0002")
   private String organization;
 
   @NotBlank(message = "로그인 구분은 필수입니다.")
+  @Schema(description = "로그인 구분, 간편인증은 5", example = "5")
   private String loginType;
 
   @NotBlank(message = "간편인증 로그인 구분은 필수입니다.")
+  @Schema(description = "1:카카오톡, 3:삼성패스, 4:KB모바일, 5:통신사, 6:네이버, 8:toss", example = "1")
   private String loginTypeLevel;
 
   @NotBlank(message = "사용자 이름은 필수입니다.")
+  @Schema(description = "사용자 이름", example = "신채린")
   private String userName;
 
   @NotBlank(message = "생년월일은 필수입니다.")
+  @Schema(description = "생년월일 YYYYMMDD", example = "20030709")
   private String identity;
 
   @NotBlank(message = "전화번호는 필수입니다.")
+  @Schema(description = "전화번호", example = "01012345678")
   private String phoneNo;
 
+  @Schema(description = "통신사, loginTypeLevel=5일 때 필수", example = "0")
   private String telecom;
+
+  @Schema(description = "요청 식별 아이디", example = "user1-uuid")
   private String id;
+
+  @Schema(description = "시작일자 yyyyMMdd", example = "20250101")
   private String startDate;
+
+  @Schema(description = "종료일자 yyyyMMdd", example = "20250505")
   private String endDate;
+
+  @Schema(description = "조회대상, 0:전체 / 1:본인 / 2:영유아", example = "1")
   private String type;
+
+  @Schema(description = "약품이미지 포함 여부, 1:포함 / 0:미포함", example = "0")
   private String drugImageYN;
+
+  @Schema(description = "복약지도 포함 여부, 1:포함 / 0:미포함", example = "0")
   private String medicationDirectionYN;
+
+  @Schema(description = "상세 포함 여부, 1:포함 / 0:미포함", example = "0")
   private String detailYN;
+
+  @Schema(description = "보안숫자 제한시간", example = "170")
   private String timeOut;
 
   @Schema(description = "간편인증 완료 여부, 1: 확인", example = "1")
   private String simpleAuth;
 
-  @Schema(description = "보안문자, 자동 인식 실패 시 입력")
+  @Schema(description = "보안문자, 자동 인식 실패 시 입력", example = "")
   private String secureNo;
 
   @Schema(description = "보안문자 새로고침, 0:기본 / 1:재요청 / 2:입력취소", example = "0")
   private String secureNoRefresh;
 
   @NotNull(message = "추가 인증 정보는 필수입니다.")
+  @Schema(
+      description = "1차 응답에서 받은 jobIndex, threadIndex, jti, twoWayTimestamp 값을 그대로 전달",
+      example =
+          """
+          {
+            "jobIndex": 0,
+            "threadIndex": 0,
+            "jti": "69fe473b0f06c0d5a985a9ce",
+            "twoWayTimestamp": 1778272063054
+          }
+          """)
   private Map<String, Object> twoWayInfo;
 }
