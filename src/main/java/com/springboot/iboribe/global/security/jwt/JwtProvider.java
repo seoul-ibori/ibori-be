@@ -6,7 +6,6 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
@@ -86,26 +85,6 @@ public class JwtProvider {
 
     if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
       return bearerToken.substring(BEARER_PREFIX.length());
-    }
-
-    if (request.getCookies() != null) {
-      for (Cookie cookie : request.getCookies()) {
-        if (TokenType.ACCESS_TOKEN.name().equals(cookie.getName())) {
-          return cookie.getValue();
-        }
-      }
-    }
-
-    return null;
-  }
-
-  public String extractRefreshToken(HttpServletRequest request) {
-    if (request.getCookies() != null) {
-      for (Cookie cookie : request.getCookies()) {
-        if (TokenType.REFRESH_TOKEN.name().equals(cookie.getName())) {
-          return cookie.getValue();
-        }
-      }
     }
 
     return null;
