@@ -54,7 +54,7 @@ public class AiSummaryController {
                   @Content(
                       mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                       schema = @Schema(implementation = AiSummaryAudioMultipartBody.class))))
-  @PostMapping(value = "/{recordId}/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/{recordId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BaseResponse<AiSummaryResponse>> generateSummaryFromAudio(
       @PathVariable Long recordId,
       @RequestPart(value = "audioFile", required = true) MultipartFile audioFile) {
