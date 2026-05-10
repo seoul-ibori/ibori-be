@@ -47,7 +47,13 @@ public class AuthController {
           - 별도 회원가입 없이 미리 등록된 사용자/아이/진료 기록 데이터 확인 가능  \n
 
           **Process**  \n
-          - 서버에 등록된 mom_jiyoon 계정으로 로그인  \n
+          - 서버에 등록된 mom_jiyoon 계정으로 자동 로그인  \n
+
+          **Demo Accounts** (일반 로그인으로도 사용 가능)  \n
+          가족 고유번호: YoonFamily2026!  \n
+          엄마 - username: mom_jiyoon / password: Demo!1234  \n
+          아빠 - username: dad_hyunwoo / password: Demo!1234  \n
+          할머니 - username: grandma_soon / password: Demo!1234  \n
 
           **Returns**  \n
           userId, name, username  \n
@@ -95,6 +101,12 @@ public class AuthController {
           - 로그인 성공 시 accessToken은 쿠키(HttpOnly)와 body 모두 내려줌  \n
           - 쿠키: 이후 API 요청에 자동 포함  \n
           - body accessToken: 로그인 여부/UI 상태 관리용  \n
+
+          **Demo Accounts**  \n
+          가족 고유번호: YoonFamily2026!  \n
+          엄마 - username: mom_jiyoon / password: Demo!1234  \n
+          아빠 - username: dad_hyunwoo / password: Demo!1234  \n
+          할머니 - username: grandma_soon / password: Demo!1234  \n
 
           **Returns**  \n
           userId, name, username  \n
