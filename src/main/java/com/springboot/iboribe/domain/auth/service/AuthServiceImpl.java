@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.iboribe.domain.auth.dto.request.LoginRequest;
 import com.springboot.iboribe.domain.auth.dto.request.SignUpRequest;
+import com.springboot.iboribe.domain.auth.dto.response.DuplicateCheckResponse;
 import com.springboot.iboribe.domain.auth.dto.response.TokenResponse;
 import com.springboot.iboribe.domain.auth.exception.AuthErrorCode;
 import com.springboot.iboribe.domain.family.entity.Family;
@@ -135,6 +136,20 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public void logout() {
     log.info("[Auth] 사용자 로그아웃 요청 - 쿠키 만료 처리");
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public DuplicateCheckResponse checkUsername(String username) {
+    boolean isDuplicate = userRepository.existsByUsername(username);
+    return DuplicateCheckResponse.of(isDuplicate);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public DuplicateCheckResponse checkFamilyCode(String familyCode) {
+    boolean isDuplicate = familyRepository.existsByFamilyCode(familyCode);
+    return DuplicateCheckResponse.of(isDuplicate);
   }
 
   private TokenResponse createTokenResponse(User user) {
