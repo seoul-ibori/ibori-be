@@ -46,6 +46,31 @@ public class AuthController {
     return ResponseEntity.ok(BaseResponse.success(200, "데모 계정 로그인 성공", response));
   }
 
+  @PostMapping("/demo-login")
+  @Operation(
+      summary = "[토큰 X] 데모 계정 로그인",
+      description =
+          """
+          **Purpose**  \n
+          - 공모전 심사용 데모 계정 로그인  \n
+          - 별도 회원가입 없이 미리 등록된 사용자/아이/진료 기록 데이터 확인 가능  \n
+
+          **Process**  \n
+          - 서버에 등록된 demo_parent 계정으로 로그인  \n
+          - ACCESS_TOKEN, REFRESH_TOKEN 쿠키 저장  \n
+
+          **Returns**  \n
+          userId, name, username  \n
+          accessToken, refreshToken  \n
+          """)
+  public ResponseEntity<BaseResponse<TokenResponse>> demoLogin() {
+    TokenResponse response = authService.demoLogin();
+
+    return ResponseEntity.ok()
+        .headers(createTokenHeaders(response))
+        .body(BaseResponse.success(200, "데모 계정 로그인 성공", response));
+  }
+
   @Operation(
       summary = "[토큰 X] 회원가입",
       description =
