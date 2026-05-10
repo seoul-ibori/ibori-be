@@ -29,24 +29,8 @@ public class SwaggerConfig {
                     new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
-                        .bearerFormat("JWT"))
-                .addSecuritySchemes(
-                    "accessTokenCookie",
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .in(SecurityScheme.In.COOKIE)
-                        .name("ACCESS_TOKEN"))
-                .addSecuritySchemes(
-                    "refreshTokenCookie",
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .in(SecurityScheme.In.COOKIE)
-                        .name("REFRESH_TOKEN")))
-        .addSecurityItem(
-            new SecurityRequirement()
-                .addList("bearerAuth")
-                .addList("accessTokenCookie")
-                .addList("refreshTokenCookie"))
+                        .bearerFormat("JWT")))
+        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
         .info(new Info().title("Ibori API 명세서").version("1.0").description("Seoul-Ibori API 문서"));
   }
 
