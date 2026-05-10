@@ -2,6 +2,7 @@ package com.springboot.iboribe.domain.aisummary.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +10,7 @@ import com.springboot.iboribe.domain.aisummary.dto.request.AiSummaryAudioMultipa
 import com.springboot.iboribe.domain.aisummary.dto.response.AiSummaryResponse;
 import com.springboot.iboribe.domain.aisummary.service.AiSummaryService;
 import com.springboot.iboribe.global.common.BaseResponse;
+import com.springboot.iboribe.global.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,23 +31,23 @@ public class AiSummaryController {
       description =
           """
           **Description**  \n
-          특정 의료 기록에 진료 녹음 파일을 업로드하여 AI 요약을 생성합니다.  \n
+          진료 녹음 파일을 업로드하여 AI 요약을 생성합니다.  \n
 
           **Parameters**  \n
-          recordId: AI 요약을 생성할 의료 기록 ID  \n
+          childId: 자녀 ID (recordId 없을 때 필수)  \n
+          recordId: 기존 진료 기록 ID (선택 - 기존 진료 내역에 연결할 경우에만 입력, 있으면 childId 불필요)  \n
           audioFile: 진료 녹음 오디오 파일  \n
 
           **Process**  \n
+          - recordId 없으면 AI 소스 진료 기록 자동 생성  \n
           - 오디오 파일 업로드  \n
           - OpenAI Whisper/STT로 텍스트 변환  \n
           - 변환된 텍스트를 AI 요약  \n
           - 한줄요약, 진료요약, 주의사항, 다음일정 저장  \n
 
           **Returns**  \n
-          oneLineSummary  \n
-          medicalSummary  \n
-          caution  \n
-          nextSchedule  \n
+          summaryId, childId, recordId  \n
+          oneLineSummary, medicalSummary, caution, nextSchedule  \n
           """,
       requestBody =
           @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -54,12 +56,16 @@ public class AiSummaryController {
                   @Content(
                       mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                       schema = @Schema(implementation = AiSummaryAudioMultipartBody.class))))
-  @PostMapping(value = "/{recordId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BaseResponse<AiSummaryResponse>> generateSummaryFromAudio(
-      @PathVariable Long recordId,
-      @RequestPart(value = "audioFile", required = true) MultipartFile audioFile) {
+      @RequestParam(required = false) Long childId,
+      @RequestParam(required = false) Long recordId,
+      @RequestPart(value = "audioFile") MultipartFile audioFile,
+      @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-    AiSummaryResponse response = aiSummaryService.generateSummaryFromAudio(recordId, audioFile);
+    AiSummaryResponse response =
+        aiSummaryService.generateSummaryFromAudio(
+            childId, recordId, audioFile, userDetails.getUserId());
 
     return ResponseEntity.ok(BaseResponse.success(200, "AI 진료 요약 생성 성공", response));
   }
