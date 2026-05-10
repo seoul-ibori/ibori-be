@@ -2,6 +2,7 @@ package com.springboot.iboribe.domain.auth.service;
 
 import com.springboot.iboribe.domain.auth.dto.request.LoginRequest;
 import com.springboot.iboribe.domain.auth.dto.request.SignUpRequest;
+import com.springboot.iboribe.domain.auth.dto.response.DuplicateCheckResponse;
 import com.springboot.iboribe.domain.auth.dto.response.TokenResponse;
 
 public interface AuthService {
@@ -20,4 +21,10 @@ public interface AuthService {
 
   /** 로그아웃 */
   void logout();
+
+  /** 아이디 중복 확인 */
+  DuplicateCheckResponse checkUsername(String username);
+
+  /** 가족고유번호 중복 확인 */
+  DuplicateCheckResponse checkFamilyCode(String familyCode);
 }
