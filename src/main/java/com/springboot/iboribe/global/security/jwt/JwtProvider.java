@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
 import com.springboot.iboribe.global.config.property.JwtProperties;
 
@@ -102,14 +103,7 @@ public class JwtProvider {
   }
 
   public String extractAccessToken(HttpServletRequest request) {
-    Cookie[] cookies = request.getCookies();
-    if (cookies == null) return null;
-
-    for (Cookie cookie : cookies) {
-      if (COOKIE_NAME.equals(cookie.getName())) {
-        return cookie.getValue();
-      }
-    }
-    return null;
+    var cookie = WebUtils.getCookie(request, COOKIE_NAME);
+    return cookie != null ? cookie.getValue() : null;
   }
 }
