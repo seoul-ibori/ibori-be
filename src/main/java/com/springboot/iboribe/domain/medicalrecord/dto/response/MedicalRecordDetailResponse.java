@@ -2,12 +2,14 @@ package com.springboot.iboribe.domain.medicalrecord.dto.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecord;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Builder
 @Schema(title = "MedicalRecordDetailResponse: 의료 기록 상세 응답 DTO")
@@ -25,8 +27,11 @@ public class MedicalRecordDetailResponse {
   @Schema(description = "병원 또는 약국 이름", example = "엠메디칼약국[의정부시 충의로]")
   private String hospitalName;
 
-  @Schema(description = "진료 유형", example = "처방조제")
-  private String treatType;
+  @Schema(description = "메모", example = "밤에 기침과 콧물 증상으로 방문")
+  private String memo;
+
+  @Schema(description = "AI 요약 존재 여부", example = "true")
+  private boolean hasAiSummary;
 
   @Schema(description = "투약 상세 정보 목록")
   private List<MedicationDetailResponse> medications;
@@ -37,8 +42,12 @@ public class MedicalRecordDetailResponse {
         .childName(record.getChild().getName())
         .treatDate(record.getTreatDate())
         .hospitalName(record.getHospitalName())
-        .treatType(record.getTreatType())
-        .medications(record.getMedications().stream().map(MedicationDetailResponse::from).toList())
+        .memo(record.getMemo())
+        .hasAiSummary(record.getAiSummary() != null)
+        .medications(
+            record.getMedications() == null
+                ? List.of()
+                : record.getMedications().stream().map(MedicationDetailResponse::from).toList())
         .build();
   }
 }

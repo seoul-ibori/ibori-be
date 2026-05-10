@@ -5,11 +5,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.iboribe.domain.auth.exception.AuthErrorCode;
 import com.springboot.iboribe.domain.child.entity.Child;
+import com.springboot.iboribe.domain.child.entity.ChildProfileColor;
 import com.springboot.iboribe.domain.child.repository.ChildRepository;
 import com.springboot.iboribe.domain.codef.dto.response.CodefMedicalRecordResponse;
 import com.springboot.iboribe.domain.codef.dto.response.CodefTreatmentResponse;
 import com.springboot.iboribe.domain.family.entity.Family;
+import com.springboot.iboribe.domain.family.entity.FamilyRole;
 import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecord;
+import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecordSource;
 import com.springboot.iboribe.domain.medicalrecord.repository.MedicalRecordRepository;
 import com.springboot.iboribe.domain.user.entity.User;
 import com.springboot.iboribe.domain.user.repository.UserRepository;
@@ -50,12 +53,17 @@ public class MedicalRecordSaveServiceImpl implements MedicalRecordSaveService {
               .orElseGet(
                   () ->
                       childRepository.save(
-                          Child.builder().family(family).name(record.getSubjectName()).build()));
+                          Child.builder()
+                              .family(family)
+                              .name(record.getSubjectName())
+                              .familyRole(FamilyRole.CHILD)
+                              .profileColor(ChildProfileColor.random())
+                              .build()));
 
       boolean alreadyExists =
           medicalRecordRepository
-              .findByChildAndHospitalNameAndTreatDateAndTreatType(
-                  child, record.getHospitalName(), record.getTreatDate(), record.getTreatType())
+              .findByChildAndHospitalNameAndTreatDate(
+                  child, record.getHospitalName(), record.getTreatDate())
               .isPresent();
 
       if (alreadyExists) {
@@ -67,8 +75,8 @@ public class MedicalRecordSaveServiceImpl implements MedicalRecordSaveService {
               .child(child)
               .hospitalName(record.getHospitalName())
               .treatDate(record.getTreatDate())
-              .treatType(record.getTreatType())
               .medications(record.getMedications())
+              .source(MedicalRecordSource.CODEF)
               .build());
     }
   }
