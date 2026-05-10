@@ -7,7 +7,6 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseCookie;
