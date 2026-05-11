@@ -34,7 +34,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
       @Param("nightOnly") boolean nightOnly);
 
   @Query(
-      "SELECT new com.springboot.iboribe.domain.district.dto.response.DistrictResponse(h.gu, h.dong) "
+      "SELECT new com.springboot.iboribe.domain.district.dto.response.DistrictResponse(h.gu, h.dong, AVG(h.lat), AVG(h.lng)) "
           + "FROM Hospital h WHERE h.gu LIKE %:keyword% OR h.dong LIKE %:keyword% "
           + "GROUP BY h.gu, h.dong ORDER BY h.gu, h.dong")
   List<DistrictResponse> searchDistricts(@Param("keyword") String keyword);
