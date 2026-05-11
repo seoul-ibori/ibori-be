@@ -7,11 +7,12 @@ import com.springboot.iboribe.domain.medicalrecord.dto.response.MedicalRecordSum
 
 public interface MedicalRecordQueryService {
 
-  List<MedicalRecordSummaryResponse> getMedicalRecords(int year, int month);
+  List<MedicalRecordSummaryResponse> getMedicalRecords(Long userId, int year, int month);
 
-  List<MedicalRecordSummaryResponse> getMedicalRecordsByChild(Long childId, int year, int month);
+  List<MedicalRecordSummaryResponse> getMedicalRecordsByChild(
+      Long userId, Long childId, int year, int month);
 
-  List<MedicalRecordSummaryResponse> getMedicalRecordsByDate(String date);
+  List<MedicalRecordSummaryResponse> getMedicalRecordsByDate(Long userId, String date);
 
   MedicalRecordDetailResponse getMedicalRecordDetail(Long recordId);
 }

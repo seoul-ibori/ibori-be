@@ -1,5 +1,7 @@
 package com.springboot.iboribe.domain.user.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import com.springboot.iboribe.global.exception.CustomException;
 import com.springboot.iboribe.global.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -48,5 +51,21 @@ public class UserController {
     }
     UserInfoResponse response = userService.getUserInfo(userDetails.getUserId());
     return ResponseEntity.ok(BaseResponse.success(200, "사용자 정보 조회 성공", response));
+  }
+
+  @SecurityRequirements
+  @Operation(summary = "[토큰 X] 전체 사용자 조회", description = "관리자용 전체 사용자 목록 조회")
+  @GetMapping("/admin/users")
+  public ResponseEntity<BaseResponse<List<UserInfoResponse>>> getAllUsers() {
+    List<UserInfoResponse> response = userService.getAllUsers();
+    return ResponseEntity.ok(BaseResponse.success(200, "전체 사용자 조회 성공", response));
+  }
+
+  @SecurityRequirements
+  @Operation(summary = "[토큰 X] 사용자 삭제", description = "관리자용 특정 사용자 삭제")
+  @DeleteMapping("/admin/users/{userId}")
+  public ResponseEntity<BaseResponse<Void>> deleteUser(@PathVariable Long userId) {
+    userService.deleteUser(userId);
+    return ResponseEntity.ok(BaseResponse.success(200, "사용자 삭제 성공", null));
   }
 }
