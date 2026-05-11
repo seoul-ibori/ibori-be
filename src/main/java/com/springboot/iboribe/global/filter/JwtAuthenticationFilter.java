@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -87,6 +88,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       SecurityContextHolder.clearContext();
       log.warn("[JWT] 유효하지 않은 Access Token");
       writeErrorResponse(response, 401, "유효하지 않은 Access Token입니다.");
+
+    } catch (UsernameNotFoundException e) {
+      SecurityContextHolder.clearContext();
+      log.warn("[JWT] 토큰의 사용자가 존재하지 않음 - username: {}", e.getMessage());
+      filterChain.doFilter(request, response);
     }
   }
 
