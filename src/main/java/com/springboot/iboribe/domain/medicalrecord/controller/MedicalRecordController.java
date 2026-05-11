@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.springboot.iboribe.domain.medicalrecord.dto.request.MedicalRecordCreateRequest;
@@ -16,6 +17,7 @@ import com.springboot.iboribe.domain.medicalrecord.dto.response.MedicalRecordUpd
 import com.springboot.iboribe.domain.medicalrecord.service.MedicalRecordCommandService;
 import com.springboot.iboribe.domain.medicalrecord.service.MedicalRecordQueryService;
 import com.springboot.iboribe.global.common.BaseResponse;
+import com.springboot.iboribe.global.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,19 +53,21 @@ public class MedicalRecordController {
           """)
   @GetMapping
   public ResponseEntity<BaseResponse<List<MedicalRecordSummaryResponse>>> getMedicalRecords(
+      @AuthenticationPrincipal CustomUserDetails userDetails,
       @RequestParam(required = false) Integer year,
       @RequestParam(required = false) Integer month,
       @RequestParam(required = false) Long childId,
       @RequestParam(required = false) String date) {
 
+    Long userId = userDetails.getUserId();
     List<MedicalRecordSummaryResponse> response;
 
     if (date != null && !date.isBlank()) {
-      response = medicalRecordQueryService.getMedicalRecordsByDate(date);
+      response = medicalRecordQueryService.getMedicalRecordsByDate(userId, date);
     } else if (childId != null) {
-      response = medicalRecordQueryService.getMedicalRecordsByChild(childId, year, month);
+      response = medicalRecordQueryService.getMedicalRecordsByChild(userId, childId, year, month);
     } else {
-      response = medicalRecordQueryService.getMedicalRecords(year, month);
+      response = medicalRecordQueryService.getMedicalRecords(userId, year, month);
     }
 
     return ResponseEntity.ok(BaseResponse.success(200, "진료 내역 목록 조회 성공", response));

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.springboot.iboribe.domain.child.entity.Child;
+import com.springboot.iboribe.domain.family.entity.Family;
 import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecord;
 
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
@@ -39,4 +40,20 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
           + " WHERE mr.treatDate = :treatDate"
           + " ORDER BY mr.treatDate DESC")
   List<MedicalRecord> findAllByTreatDateOrderByTreatDateDesc(@Param("treatDate") String treatDate);
+
+  @Query(
+      "SELECT mr FROM MedicalRecord mr LEFT JOIN FETCH mr.aiSummary"
+          + " WHERE mr.child.family = :family AND mr.treatDate BETWEEN :startDate AND :endDate"
+          + " ORDER BY mr.treatDate DESC")
+  List<MedicalRecord> findAllByFamilyAndTreatDateBetweenOrderByTreatDateDesc(
+      @Param("family") Family family,
+      @Param("startDate") String startDate,
+      @Param("endDate") String endDate);
+
+  @Query(
+      "SELECT mr FROM MedicalRecord mr LEFT JOIN FETCH mr.aiSummary"
+          + " WHERE mr.child.family = :family AND mr.treatDate = :treatDate"
+          + " ORDER BY mr.treatDate DESC")
+  List<MedicalRecord> findAllByFamilyAndTreatDateOrderByTreatDateDesc(
+      @Param("family") Family family, @Param("treatDate") String treatDate);
 }
