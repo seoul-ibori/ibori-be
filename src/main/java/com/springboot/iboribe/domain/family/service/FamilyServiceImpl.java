@@ -13,6 +13,7 @@ import com.springboot.iboribe.domain.family.dto.response.FamilyMemberResponse;
 import com.springboot.iboribe.domain.family.entity.Family;
 import com.springboot.iboribe.domain.family.exception.FamilyErrorCode;
 import com.springboot.iboribe.domain.family.repository.FamilyRepository;
+import com.springboot.iboribe.domain.notification.repository.NotificationRepository;
 import com.springboot.iboribe.domain.user.entity.User;
 import com.springboot.iboribe.domain.user.repository.UserRepository;
 import com.springboot.iboribe.global.exception.CustomException;
@@ -27,6 +28,7 @@ public class FamilyServiceImpl implements FamilyService {
   private final UserRepository userRepository;
   private final FamilyRepository familyRepository;
   private final ChildRepository childRepository;
+  private final NotificationRepository notificationRepository;
 
   @Override
   public List<FamilyMemberResponse> getFamilyMembers(Long loginUserId) {
@@ -64,6 +66,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     validateSameFamily(targetUser, loginUser.getFamily());
 
+    notificationRepository.deleteAllByUserId(memberId);
     userRepository.delete(targetUser);
   }
 
@@ -73,7 +76,7 @@ public class FamilyServiceImpl implements FamilyService {
     User loginUser = getUser(loginUserId);
     Family family = loginUser.getFamily();
 
-    if (familyRepository.existsByFamilyCode(request.getFamilyCode())) {
+    if (familyRepository.existsByFamilyCodeAndIdNot(request.getFamilyCode(), family.getId())) {
       throw new CustomException(FamilyErrorCode.ALREADY_EXIST_FAMILY_CODE);
     }
 

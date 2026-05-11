@@ -28,4 +28,8 @@ public interface AiSummaryRepository extends JpaRepository<AiSummary, Long> {
   @Modifying(clearAutomatically = true)
   @Query("DELETE FROM AiSummary a WHERE a.medicalRecord.id = :recordId")
   void deleteByMedicalRecordId(@Param("recordId") Long recordId);
+
+  @Modifying(clearAutomatically = true)
+  @Query("DELETE FROM AiSummary a WHERE a.medicalRecord.child.id = :childId")
+  void deleteAllByMedicalRecordChildId(@Param("childId") Long childId);
 }

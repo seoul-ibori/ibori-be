@@ -10,5 +10,7 @@ public interface FamilyRepository extends JpaRepository<Family, Long> {
 
   boolean existsByFamilyCode(String familyCode);
 
+  boolean existsByFamilyCodeAndIdNot(String familyCode, Long id);
+
   Optional<Family> findByFamilyCode(String familyCode);
 }

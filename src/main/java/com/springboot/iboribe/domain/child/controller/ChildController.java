@@ -76,4 +76,25 @@ public class ChildController {
 
     return ResponseEntity.ok(BaseResponse.success(200, "아이 정보 수정 성공", response));
   }
+
+  @Operation(
+      summary = "[토큰 O] 아이 삭제",
+      description =
+          """
+          **Authentication**  \n
+          - JWT 인증 필요  \n
+          - ACCESS_TOKEN 사용  \n
+
+          **Process**  \n
+          - 로그인 사용자의 가족 내 자녀 삭제  \n
+          - 해당 자녀의 진료 기록, AI 요약, 알림 데이터 함께 삭제  \n
+          """)
+  @DeleteMapping("/{childId}")
+  public ResponseEntity<BaseResponse<Void>> deleteChild(
+      @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long childId) {
+
+    childService.deleteChild(userDetails.getUserId(), childId);
+
+    return ResponseEntity.ok(BaseResponse.success(200, "아이 삭제 성공", null));
+  }
 }
