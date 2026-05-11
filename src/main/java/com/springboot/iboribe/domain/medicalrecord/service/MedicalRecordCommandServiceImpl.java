@@ -15,6 +15,7 @@ import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecord;
 import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecordSource;
 import com.springboot.iboribe.domain.medicalrecord.exception.MedicalRecordErrorCode;
 import com.springboot.iboribe.domain.medicalrecord.repository.MedicalRecordRepository;
+import com.springboot.iboribe.domain.notification.repository.NotificationRepository;
 import com.springboot.iboribe.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class MedicalRecordCommandServiceImpl implements MedicalRecordCommandServ
   private final ChildRepository childRepository;
   private final MedicalRecordRepository medicalRecordRepository;
   private final AiSummaryRepository aiSummaryRepository;
+  private final NotificationRepository notificationRepository;
 
   @Override
   public MedicalRecordCreateResponse createMedicalRecord(MedicalRecordCreateRequest request) {
@@ -59,7 +61,7 @@ public class MedicalRecordCommandServiceImpl implements MedicalRecordCommandServ
             .orElseThrow(
                 () -> new CustomException(MedicalRecordErrorCode.MEDICAL_RECORD_NOT_FOUND));
 
-    if (record.getSource() != MedicalRecordSource.USER) {
+    if (record.getSource() == MedicalRecordSource.CODEF) {
       throw new CustomException(MedicalRecordErrorCode.CODEF_RECORD_NOT_MODIFIABLE);
     }
 
@@ -90,10 +92,11 @@ public class MedicalRecordCommandServiceImpl implements MedicalRecordCommandServ
             .orElseThrow(
                 () -> new CustomException(MedicalRecordErrorCode.MEDICAL_RECORD_NOT_FOUND));
 
-    if (record.getSource() != MedicalRecordSource.USER) {
+    if (record.getSource() == MedicalRecordSource.CODEF) {
       throw new CustomException(MedicalRecordErrorCode.CODEF_RECORD_NOT_MODIFIABLE);
     }
 
+    notificationRepository.deleteAllByAiSummaryMedicalRecordId(recordId);
     aiSummaryRepository.deleteByMedicalRecordId(recordId);
     medicalRecordRepository.delete(record);
   }
