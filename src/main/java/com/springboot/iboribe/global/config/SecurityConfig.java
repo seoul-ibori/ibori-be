@@ -39,9 +39,9 @@ public class SecurityConfig {
                         "/api/hospital/**",
                         "/api/predict/**",
                         "/api/district/**",
-                        "/api/codef/medical-records",
-                        "/api/codef/children/register",
-                        "/api/codef/children/list")
+                        "/api/codef/medical-records/**",
+                        "/api/codef/children/register/**",
+                        "/api/codef/children/list/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
