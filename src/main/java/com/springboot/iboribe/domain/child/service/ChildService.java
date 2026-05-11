@@ -11,4 +11,6 @@ public interface ChildService {
   List<ChildResponse> getChildren(Long userId);
 
   ChildUpdateResponse updateChild(Long childId, ChildUpdateRequest request);
+
+  void deleteChild(Long loginUserId, Long childId);
 }

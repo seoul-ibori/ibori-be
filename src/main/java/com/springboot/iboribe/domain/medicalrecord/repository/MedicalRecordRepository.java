@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -56,4 +57,8 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
           + " ORDER BY mr.treatDate DESC")
   List<MedicalRecord> findAllByFamilyAndTreatDateOrderByTreatDateDesc(
       @Param("family") Family family, @Param("treatDate") String treatDate);
+
+  @Modifying
+  @Query("DELETE FROM MedicalRecord mr WHERE mr.child.id = :childId")
+  void deleteAllByChildId(@Param("childId") Long childId);
 }
