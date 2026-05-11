@@ -16,9 +16,17 @@ public class DistrictResponse {
   @Schema(description = "표시 이름", example = "서울시 송파구 잠실동")
   private final String displayName;
 
-  public DistrictResponse(String gu, String dong) {
+  @Schema(description = "동 대표 위도", example = "37.5133")
+  private final Double lat;
+
+  @Schema(description = "동 대표 경도", example = "127.1001")
+  private final Double lng;
+
+  public DistrictResponse(String gu, String dong, Double lat, Double lng) {
     this.gu = gu;
     this.dong = dong;
     this.displayName = "서울시 " + gu + " " + dong;
+    this.lat = lat;
+    this.lng = lng;
   }
 }

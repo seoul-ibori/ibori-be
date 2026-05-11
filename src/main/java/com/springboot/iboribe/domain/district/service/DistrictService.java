@@ -18,6 +18,14 @@ public class DistrictService {
   private final HospitalRepository hospitalRepository;
 
   public List<DistrictResponse> search(String keyword) {
-    return hospitalRepository.searchDistricts(keyword);
+    String normalized = keyword.trim();
+
+    if ("서울시".contains(normalized)) {
+      return hospitalRepository.searchDistricts("");
+    }
+
+    normalized = normalized.replaceFirst("^서울시?\\s*", "");
+
+    return hospitalRepository.searchDistricts(normalized);
   }
 }
