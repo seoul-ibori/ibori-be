@@ -10,8 +10,8 @@ public interface AuthService {
   /** 데모 계정으로 로그인 */
   TokenResponse demoLogin();
 
-  /** 회원가입 */
-  void signUp(SignUpRequest request);
+  /** 회원가입 - 가입 즉시 토큰 발급 */
+  TokenResponse signUp(SignUpRequest request);
 
   /** 로그인 - 토큰 발급 */
   TokenResponse login(LoginRequest request);

@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void signUp(SignUpRequest request) {
+  public TokenResponse signUp(SignUpRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
       throw new CustomException(AuthErrorCode.ALREADY_EXIST_USERNAME);
     }
@@ -67,15 +67,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     User user =
-        User.builder()
-            .name(request.getName())
-            .username(request.getUsername())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .family(family)
-            .familyRole(request.getFamilyRole())
-            .build();
+        userRepository.save(
+            User.builder()
+                .name(request.getName())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .family(family)
+                .familyRole(request.getFamilyRole())
+                .build());
 
-    userRepository.save(user);
+    log.info("[Auth] 회원가입 성공 - userId: {}, username: {}", user.getId(), user.getUsername());
+
+    return createTokenResponse(user);
   }
 
   @Override

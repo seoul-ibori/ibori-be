@@ -79,13 +79,18 @@ public class AuthController {
           familyRole: CHILD / MOTHER / FATHER / GRANDMOTHER / GRANDFATHER / SIBLING / RELATIVE  \n
 
           **Returns** \n
-          회원가입 성공 여부 \n
+          userId, name, username  \n
+          accessToken, refreshToken  \n
           """)
   @PostMapping("/signup")
-  public ResponseEntity<BaseResponse<Void>> signUp(@Valid @RequestBody SignUpRequest request) {
-    authService.signUp(request);
+  public ResponseEntity<BaseResponse<TokenResponse>> signUp(
+      @Valid @RequestBody SignUpRequest request, HttpServletResponse httpResponse) {
 
-    return ResponseEntity.status(201).body(BaseResponse.success(201, "회원가입 성공", null));
+    TokenResponse response = authService.signUp(request);
+
+    setAccessTokenCookie(httpResponse, response.getAccessToken());
+
+    return ResponseEntity.status(201).body(BaseResponse.success(201, "회원가입 성공", response));
   }
 
   @SecurityRequirements
