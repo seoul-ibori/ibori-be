@@ -181,7 +181,7 @@ public class CodefController {
   }
 
   @Operation(
-      summary = "[토큰 X] CODEF 진료 및 투약정보 조회 2차 요청",
+      summary = "[토큰 O] CODEF 진료 및 투약정보 조회 2차 요청",
       description =
           """
           **Description**  \n
