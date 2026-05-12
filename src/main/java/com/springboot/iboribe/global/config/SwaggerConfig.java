@@ -17,7 +17,7 @@ public class SwaggerConfig {
   @Bean
   public OpenAPI customOpenAPI() {
     Server localServer = new Server().url("http://localhost:8080").description("Local Server");
-    Server prodServer = new Server().url("https://ibori.site").description("Production Server");
+    Server prodServer = new Server().url("https://api.ibori.site").description("Production Server");
 
     return new OpenAPI()
         .addServersItem(prodServer)
