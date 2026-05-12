@@ -39,7 +39,7 @@ public class PredictClient {
   private final WebClient webClient;
 
   public PredictClient(WebClient.Builder webClientBuilder) {
-    this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8000").build();
+    this.webClient = webClientBuilder.baseUrl("http://host.docker.internal:8000").build();
   }
 
   // 월, 요일은 서울 기준으로 자동 세팅
