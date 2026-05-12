@@ -75,6 +75,8 @@ jobs:
                 image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
                 container_name: ibori-container
                 restart: always
+                extra_hosts:
+                  - "host.docker.internal:host-gateway"
                 ports:
                   - "8080:8080"
                 environment:
