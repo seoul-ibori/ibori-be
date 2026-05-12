@@ -4,6 +4,8 @@ services:
     image: ${DOCKER_USERNAME}/${DOCKER_REPO}:latest  # Docker Hub에서 pull 받아서 컨테이너 생성 시에 사용할 이미지 지정
     container_name: ibori-container
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     ports:
       - "8080:8080" # host의 8080 포트를 컨테이너의 8080 포트와 매핑 -> 포트 포워딩!
