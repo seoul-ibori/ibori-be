@@ -20,6 +20,7 @@ import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecord;
 import com.springboot.iboribe.domain.medicalrecord.entity.MedicalRecordSource;
 import com.springboot.iboribe.domain.medicalrecord.exception.MedicalRecordErrorCode;
 import com.springboot.iboribe.domain.medicalrecord.repository.MedicalRecordRepository;
+import com.springboot.iboribe.domain.notification.repository.NotificationRepository;
 import com.springboot.iboribe.domain.notification.service.NotificationService;
 import com.springboot.iboribe.global.exception.CustomException;
 
@@ -37,6 +38,7 @@ public class AiSummaryServiceImpl implements AiSummaryService {
   private final ChildRepository childRepository;
   private final AiSummaryMapper aiSummaryMapper;
   private final NotificationService notificationService;
+  private final NotificationRepository notificationRepository;
 
   @Override
   @Transactional
@@ -75,6 +77,7 @@ public class AiSummaryServiceImpl implements AiSummaryService {
       throw new CustomException(AiSummaryErrorCode.AI_SUMMARY_NOT_FOUND);
     }
 
+    notificationRepository.deleteAllByAiSummaryMedicalRecordId(recordId);
     aiSummaryRepository.deleteByMedicalRecordId(recordId);
   }
 
